@@ -1,116 +1,120 @@
-const moviesObject = {
-    "🕷️🚶‍♂️🏠💦": "Spiderman Homecoming",
-    "👩‍❤️‍👨🚢🥶": "Titanic",
-    "👸👹🌹": "Beauty And The Beast",
-    "🐜👨 ": "Antman",
-    "🧙👓⚡": "Harry Potter",
-    "🖊️📓👩‍❤️‍👨": "The notebook",
-    "🦇🃏 ": "Joker",
-    "👻👻🔫": "Ghostbusters",
-    "😈👗👠": "Devil Wears Prada",
-    "🎉🍺🎊❎": "This Is the End",
-    "🔍🐟 ": "Finding Nemo",
-    "👸📔 ": "Princess Diaries",
-    "🐔🏃 ": "Chicken Run",
-};
-const container = document.querySelector(".container");
-const controls = document.querySelector(".controls-container");
-const startButton = document.getElementById("start");
-const letterContainer = document.getElementById("letter-container");
-const userInputSection = document.getElementById("userInputSection");
-const resultText = document.getElementById("result");
-const hints = Object.keys(moviesObject);
-let randomHint = "",
-    randomWord = "";
-let winCount = 0,
-    lossCount = 5;
-const generateRandomValue = (array) => Math.floor(Math.random() * array.length);
-//Blocker
-const blocker = () => {
-    let letterButtons = document.querySelectorAll(".letters");
-    letterButtons.forEach((button) => {
-        button.disabled = true;
-    });
-    stopGame();
-};
-//Start game
-startButton.addEventListener("click", () => {
-    //Controls and buttons visibility
-    controls.classList.add("hide");
-    init();
-});
-//Stop Game
-const stopGame = () => {
-    controls.classList.remove("hide");
-};
-//Generate Word
-const generateWord = () => {
-    letterContainer.classList.remove("hide");
-    userInputSection.innerText = "";
-    randomHint = hints[generateRandomValue(hints)];
-    randomWord = moviesObject[randomHint];
-    container.innerHTML = `<div id="movieHint">${randomHint}</div>`;
-    let displayItem = "";
-    randomWord.split("").forEach((value) => {
-        if (value == " ") {
-            winCount += 1;
-            displayItem += `<span class="inputSpace">&nbsp;</span>`;
+const countries = [
+    { name: "France", flag: "https://flagcdn.com/fr.svg" },
+    { name: "Germany", flag: "https://flagcdn.com/de.svg" },
+    { name: "Italy", flag: "https://flagcdn.com/it.svg" },
+    { name: "Japan", flag: "https://flagcdn.com/jp.svg" },
+    { name: "Brazil", flag: "https://flagcdn.com/br.svg" },
+    { name: "United States", flag: "https://flagcdn.com/us.svg" },
+    { name: "Canada", flag: "https://flagcdn.com/ca.svg" },
+    { name: "United Kingdom", flag: "https://flagcdn.com/gb.svg" },
+    { name: "Australia", flag: "https://flagcdn.com/au.svg" },
+    { name: "China", flag: "https://flagcdn.com/cn.svg" },
+    { name: "India", flag: "https://flagcdn.com/in.svg" },
+    { name: "Mexico", flag: "https://flagcdn.com/mx.svg" },
+    { name: "Russia", flag: "https://flagcdn.com/ru.svg" },
+    { name: "South Africa", flag: "https://flagcdn.com/za.svg" },
+    { name: "Argentina", flag: "https://flagcdn.com/ar.svg" },
+    { name: "South Korea", flag: "https://flagcdn.com/kr.svg" },
+    { name: "Nigeria", flag: "https://flagcdn.com/ng.svg" },
+    { name: "Egypt", flag: "https://flagcdn.com/eg.svg" },
+    { name: "Spain", flag: "https://flagcdn.com/es.svg" },
+    { name: "Portugal", flag: "https://flagcdn.com/pt.svg" },
+    { name: "Netherlands", flag: "https://flagcdn.com/nl.svg" },
+    { name: "Sweden", flag: "https://flagcdn.com/se.svg" },
+    { name: "Norway", flag: "https://flagcdn.com/no.svg" },
+    { name: "Greece", flag: "https://flagcdn.com/gr.svg" },
+    { name: "Turkey", flag: "https://flagcdn.com/tr.svg" },
+    { name: "Saudi Arabia", flag: "https://flagcdn.com/sa.svg" },
+    { name: "New Zealand", flag: "https://flagcdn.com/nz.svg" },
+    { name: "Switzerland", flag: "https://flagcdn.com/ch.svg" },
+    { name: "Poland", flag: "https://flagcdn.com/pl.svg" },
+    { name: "Ukraine", flag: "https://flagcdn.com/ua.svg" },
+    { name: "Malaysia", flag: "https://flagcdn.com/my.svg" },
+    { name: "Thailand", flag: "https://flagcdn.com/th.svg" },
+    { name: "Vietnam", flag: "https://flagcdn.com/vn.svg" },
+    { name: "Indonesia", flag: "https://flagcdn.com/id.svg" },
+    { name: "Philippines", flag: "https://flagcdn.com/ph.svg" },
+    { name: "Pakistan", flag: "https://flagcdn.com/pk.svg" },
+    { name: "Bangladesh", flag: "https://flagcdn.com/bd.svg" },
+    { name: "Iran", flag: "https://flagcdn.com/ir.svg" },
+    { name: "Iraq", flag: "https://flagcdn.com/iq.svg" },
+    { name: "Israel", flag: "https://flagcdn.com/il.svg" },
+    { name: "Cuba", flag: "https://flagcdn.com/cu.svg" },
+    { name: "Venezuela", flag: "https://flagcdn.com/ve.svg" },
+    { name: "Colombia", flag: "https://flagcdn.com/co.svg" },
+    { name: "Peru", flag: "https://flagcdn.com/pe.svg" },
+    { name: "Chile", flag: "https://flagcdn.com/cl.svg" },
+    { name: "Morocco", flag: "https://flagcdn.com/ma.svg" },
+    { name: "Algeria", flag: "https://flagcdn.com/dz.svg" },
+    { name: "Ethiopia", flag: "https://flagcdn.com/et.svg" },
+    { name: "Kenya", flag: "https://flagcdn.com/ke.svg" },
+    { name: "Tanzania", flag: "https://flagcdn.com/tz.svg" },
+    { name: "Uganda", flag: "https://flagcdn.com/ug.svg" }
+];
+
+let currentCountryIndex = 0;
+let currentScore = 0;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const flagElement = document.getElementById('country-flag');
+    const guessInput = document.getElementById('guess');
+    const submitGuessButton = document.getElementById('submitGuess');
+    const resultElement = document.getElementById('result');
+    const nextCountryButton = document.getElementById('nextBtn');
+    const emptyErrorVal = document.querySelector("#empty-error");
+    const userScoreVal = document.querySelector("#user-score-val")
+    userScoreVal.textContent = currentScore;
+
+    function showCountry(index) {
+        flagElement.src = countries[index].flag;
+        guessInput.value = '';
+        resultElement.textContent = '';
+        emptyErrorVal.textContent = '';
+    }
+
+    function checkGuess() {
+        const userGuess = guessInput.value.trim().toLowerCase();
+        const correctAnswer = countries[currentCountryIndex].name.toLowerCase();
+        if (userGuess === correctAnswer) {
+            resultElement.textContent = 'Correct!';
+            resultElement.style.color = 'green';
+            currentScore += 10;
+            userScoreVal.textContent = currentScore;
+            nextCountry();
         } else {
-            displayItem += `<span class="inputSpace">_</span>`;
+            resultElement.textContent = `Wrong! The correct answer is ${countries[currentCountryIndex].name}.`;
+            resultElement.style.color = 'red';
+        }
+
+    }
+
+    function nextCountry() {
+        currentCountryIndex = (currentCountryIndex + 1) % countries.length;
+        showCountry(currentCountryIndex);
+    }
+
+    submitGuessButton.addEventListener('click', () => {
+        if (guessInput.value == "") {
+            emptyErrorVal.textContent = "Input field cannot be empty";
+        } else {
+            checkGuess();
+            emptyErrorVal.textContent = "";
         }
     });
-    userInputSection.innerHTML = displayItem;
-};
-//Initial Function
-const init = () => {
-    winCount = 0;
-    lossCount = 5;
-    document.getElementById(
-        "chanceCount"
-    ).innerHTML = `<span>Tries Left:</span>${lossCount}`;
-    randomHint = null;
-    randomWord = "";
-    userInputSection.innerHTML = "";
-    letterContainer.classList.add("hide");
-    letterContainer.innerHTML = "";
-    generateWord();
-    for (let i = 65; i < 91; i++) {
-        let button = document.createElement("button");
-        button.classList.add("letters");
-        //Number to ASCII [A - Z]
-        button.innerText = String.fromCharCode(i);
-        //Character button click
-        button.addEventListener("click", () => {
-            let charArray = randomWord.toUpperCase().split("");
-            let inputSpace = document.getElementsByClassName("inputSpace");
-            if (charArray.includes(button.innerText)) {
-                charArray.forEach((char, index) => {
-                    if (char === button.innerText) {
-                        button.classList.add("used");
-                        inputSpace[index].innerText = char;
-                        winCount += 1;
-                        if (winCount == charArray.length) {
-                            resultText.innerHTML = " Congratulations!! You Won";
-                            blocker();
-                        }
-                    }
-                });
+
+    guessInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            if (guessInput.value == "") {
+                emptyErrorVal.textContent = "Input field cannot be empty";
             } else {
-                lossCount -= 1;
-                document.getElementById(
-                    "chanceCount"
-                ).innerHTML = `<span>Tries Left:</span> ${lossCount}`;
-                button.classList.add("used");
-                if (lossCount == 0) {
-                    resultText.innerHTML = "Sorry! You lost the game";
-                    blocker();
-                }
+                checkGuess();
+                emptyErrorVal.textContent = "";
             }
-            button.disabled = true;
-        });
-        letterContainer.appendChild(button);
-    }
-};
-window.onload = () => {
-    init();
-};
+        }
+    });
+    
+    nextCountryButton.addEventListener('click', nextCountry);
+
+    // Show the first country on page load
+    showCountry(currentCountryIndex);
+});
